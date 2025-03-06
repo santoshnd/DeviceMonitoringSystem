@@ -1,0 +1,31 @@
+<h1> Device Details - {{ deviceId }} </h1>
+
+<table>
+    <thead>
+        <th> Timestamp </th>
+        <th> Parts Per Minute </th>
+        <th> Status </th>
+        <th> Device Id </th>
+        <th> Order </th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let event of deviceEvents">
+            <td>
+                {{ event.data.timestamp }} 
+            </td>
+            <td>
+                {{ event.data.partsPerMinute }}
+            </td>
+            <td>
+                {{ event.data.status }}
+            </td>
+            <td>
+                {{ event.data.deviceId }}
+            </td>
+            <td>
+                <a [routerLink]="['/order', event.data.order]"> {{ event.data.order }} </a>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
