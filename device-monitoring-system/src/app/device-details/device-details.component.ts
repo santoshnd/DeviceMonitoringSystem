@@ -22,7 +22,7 @@ class DeviceDetail {
 })
 export class DeviceDetailsComponent implements OnInit {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef;
-  columns = ['Timestamp', 'Parts Per Minute', 'Status', 'Device Id', 'Order'];
+  columns = ['timestamp', 'partsPerMinute', 'status', 'deviceId', 'order'];
 
   deviceId: any;
 
@@ -90,7 +90,7 @@ export class DeviceDetailsComponent implements OnInit {
     // Append table header
     const thead = table.append('thead').append('tr');
     thead.selectAll('th')
-      .data(this.columns)
+      .data(['Timestamp', 'Parts Per Minute', 'Status', 'Device Id', 'Order'])
       .enter()
       .append('th')
       .text(d => d);
