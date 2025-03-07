@@ -1,39 +1,72 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ApiCOnfig } from '../core/api-config';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+class DeviceDetail {
+  timestamp!: number;
+  partsPerMinute!: number;
+  status!: string;
+  deviceId!: string;
+  order!: string;
+};
+
 
 @Component({
   selector: 'device-details',
   templateUrl: './device-details.component.html',
   styleUrls: ['./device-details.component.scss']
 })
-export class DeviceDetailsComponent implements OnInit{
-  deviceId: any; // todo: number or string type ??
+export class DeviceDetailsComponent implements OnInit {
+  deviceId: any;
 
-  deviceEvents = [
-    { data: { "timestamp": 1741250949676, "partsPerMinute": 77.98252962718018, "status": "maintenance", "deviceId": "4229", "order": "15" } },
-
-    {
-      data: { "timestamp": 1741251233259, "partsPerMinute": 77.15702380252208, "status": "running", "deviceId": "4229", "order": "15" },
-    },
-    {
-      data: { "timestamp": 1741251237259, "partsPerMinute": 78.20422525512501, "status": "running", "deviceId": "4229", "order": "15" },
-    },
-    {
-      data: { "timestamp": 1741251241260, "partsPerMinute": 79.18984137516455, "status": "running", "deviceId": "4229", "order": "15" },
-    },
-    {
-      data: { "timestamp": 1741251244260, "partsPerMinute": 80.05303673945646, "status": "running", "deviceId": "4229", "order": "15" },
-    },
-    {
-      data: { "timestamp": 1741251248261, "partsPerMinute": 80.36610485446876, "status": "running", "deviceId": "4229", "order": "15" }
-    }
-  ];
+  // prepare api url to get device list
+  deviceDetailstUrl = ApiCOnfig.BASE_API_DEVICE_DETAILS;
+  deviceDetails: DeviceDetail[] = [];
 
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient, private ngZone: NgZone) { }
 
   ngOnInit(): void {
-    this.deviceId = this.route.snapshot.paramMap.get('deviceId'); // Get parameter
+    // get route param
+    this.deviceId = this.route.snapshot.paramMap.get('deviceId');
+
+    this.setDeviceDetails().subscribe({
+      next: (data) => {
+        this.deviceDetails.push(data);
+      },
+      error: (err) => console.error('SSE Error:', err)
+    });
+
+  }
+
+
+  setDeviceDetails(): Observable<any> {
+    this.deviceDetailstUrl = this.deviceDetailstUrl + '/' + this.deviceId;
+
+    return new Observable(observer => {
+      const eventSource = new EventSource(this.deviceDetailstUrl);
+
+      eventSource.onmessage = event => {
+        this.ngZone.run(() => {
+          observer.next(JSON.parse(event.data)); // Parse JSON data
+        });
+      };
+
+      eventSource.onerror = error => {
+        this.ngZone.run(() => {
+          observer.error(error);
+        });
+        eventSource.close(); // Close connection on error
+      };
+
+      return () => {
+        eventSource.close(); // Cleanup when unsubscribed
+      };
+    });
   }
 
 }
+
+

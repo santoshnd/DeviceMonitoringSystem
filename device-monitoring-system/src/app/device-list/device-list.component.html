@@ -5,7 +5,7 @@
         <th> Device Id </th>
     </thead>
     <tbody>
-        <tr *ngFor="let deviceId of deviceIds">
+        <tr *ngFor="let deviceId of deviceList">
             <td>
                 <a [routerLink]="['/events', deviceId]"> {{ deviceId }} </a>
             </td>

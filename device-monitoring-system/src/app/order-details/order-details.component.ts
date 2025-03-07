@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ApiCOnfig } from '../core/api-config';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+class OrderDetail {
+  orderNumber!: string;
+  productionTarget!: number;
+  productionState!: number;
+};
 
 @Component({
   selector: 'order-details',
@@ -8,16 +17,34 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OrderDetailsComponent implements OnInit {
 
-  orderNumber: any; // todo: number or string type ??
+  orderNumber: any;
 
-  orderDetails = {"orderNumber":"15","productionTarget":138465,"productionState":9953};
+  // prepare api url to get device list
+  orderDetailsUrl = ApiCOnfig.BASE_API_ORDER_DETAILS;
+  orderDetails: OrderDetail = { orderNumber: '', productionTarget: 0, productionState: 0 }
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.orderNumber = this.route.snapshot.paramMap.get('orderNumber'); // Get parameter
 
-    console.log('this.order = ', this.orderNumber );
+    // populate order details
+    this.getOrderDetails().subscribe(
+      {
+        next: (details) => {
+          this.orderDetails = details;
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
   }
-  
+
+  // GET request
+  getOrderDetails(): Observable<any> {
+    this.orderDetailsUrl = this.orderDetailsUrl + '/' + this.orderNumber;
+
+    return this.http.get(this.orderDetailsUrl);
+  }
+
 }

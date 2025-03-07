@@ -1,10 +1,22 @@
 <h1> Order Details - {{ orderNumber }} </h1>
 
-
-<div class="order-details-container">
-    <div> {{ orderDetails.orderNumber }} </div>
-
-    <div> {{ orderDetails.productionTarget }} </div>
-
-    <div> {{ orderDetails.productionState }} </div>
-</div>
+<table>
+    <thead>
+        <th> Order Number </th>
+        <th> Production Target </th>
+        <th> Production State </th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                {{ orderDetails.orderNumber }}
+            </td>
+            <td>
+                {{ orderDetails.productionTarget }}
+            </td>
+            <td>
+                {{ orderDetails.productionState }}
+            </td>
+        </tr>
+    </tbody>
+</table>

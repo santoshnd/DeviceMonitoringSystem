@@ -9,21 +9,21 @@
         <th> Order </th>
     </thead>
     <tbody>
-        <tr *ngFor="let event of deviceEvents">
+        <tr *ngFor="let detail of deviceDetails">
             <td>
-                {{ event.data.timestamp }} 
+                {{ detail.timestamp }}
             </td>
             <td>
-                {{ event.data.partsPerMinute }}
+                {{ detail.partsPerMinute }}
             </td>
             <td>
-                {{ event.data.status }}
+                {{ detail.status }}
             </td>
             <td>
-                {{ event.data.deviceId }}
+                {{ detail.deviceId }}
             </td>
             <td>
-                <a [routerLink]="['/order', event.data.order]"> {{ event.data.order }} </a>
+                <a [routerLink]="['/order', detail.order]"> {{ detail.order }} </a>
             </td>
         </tr>
 
