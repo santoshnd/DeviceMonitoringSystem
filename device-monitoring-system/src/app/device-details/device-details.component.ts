@@ -124,6 +124,11 @@ export class DeviceDetailsComponent implements OnInit {
         }
       });
   }
+
+  onHomeClick() {
+    // default Home route
+    this.router.navigate(['']); 
+  }
 }
 
 

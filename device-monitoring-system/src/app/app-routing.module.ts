@@ -7,7 +7,8 @@ import { OrderDetailsComponent } from './order-details/order-details.component';
 const routes: Routes = [
   { path: '', component: DeviceListComponent },
   { path: 'events/:deviceId', component: DeviceDetailsComponent }, // Route with parameter
-  { path: 'order/:orderNumber', component: OrderDetailsComponent }
+  { path: 'order/:orderNumber', component: OrderDetailsComponent },
+  { path: '**', component: DeviceListComponent}
 ];
 
 @NgModule({

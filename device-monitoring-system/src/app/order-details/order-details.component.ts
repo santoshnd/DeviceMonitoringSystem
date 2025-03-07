@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiCOnfig } from '../core/api-config';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -25,7 +25,7 @@ export class OrderDetailsComponent implements OnInit {
   orderDetailsUrl = ApiCOnfig.BASE_API_ORDER_DETAILS;
   orderDetails: OrderDetail = { orderNumber: '', productionTarget: 0, productionState: 0 }
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.orderNumber = this.route.snapshot.paramMap.get('orderNumber'); // Get parameter
@@ -87,6 +87,11 @@ export class OrderDetailsComponent implements OnInit {
       .enter()
       .append('td')
       .text(d => d);
+  }
+
+  onHomeClick() {
+    // default Home route
+    this.router.navigate(['']); 
   }
 
 }

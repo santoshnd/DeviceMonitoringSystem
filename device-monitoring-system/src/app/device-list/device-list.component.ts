@@ -83,6 +83,11 @@ export class DeviceListComponent implements OnInit {
         this.router.navigate([`/events/${d}`]); // Navigate using Angular Router
       });
   }
+
+  onHomeClick() {
+    // default Home route
+    this.router.navigate(['']); 
+  }
 }
 
 
