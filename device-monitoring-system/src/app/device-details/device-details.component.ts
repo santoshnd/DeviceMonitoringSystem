@@ -1,8 +1,9 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiCOnfig } from '../core/api-config';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as d3 from 'd3';
 
 class DeviceDetail {
   timestamp!: number;
@@ -10,6 +11,7 @@ class DeviceDetail {
   status!: string;
   deviceId!: string;
   order!: string;
+  [key: string]: any;
 };
 
 
@@ -19,6 +21,9 @@ class DeviceDetail {
   styleUrls: ['./device-details.component.scss']
 })
 export class DeviceDetailsComponent implements OnInit {
+  @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef;
+  columns = ['Timestamp', 'Parts Per Minute', 'Status', 'Device Id', 'Order'];
+
   deviceId: any;
 
   // prepare api url to get device list
@@ -26,7 +31,7 @@ export class DeviceDetailsComponent implements OnInit {
   deviceDetails: DeviceDetail[] = [];
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private ngZone: NgZone) { }
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private ngZone: NgZone) { }
 
   ngOnInit(): void {
     // get route param
@@ -35,6 +40,10 @@ export class DeviceDetailsComponent implements OnInit {
     this.setDeviceDetails().subscribe({
       next: (data) => {
         this.deviceDetails.push(data);
+
+        // populate d3-table 
+        this.createTable();
+
       },
       error: (err) => console.error('SSE Error:', err)
     });
@@ -67,6 +76,54 @@ export class DeviceDetailsComponent implements OnInit {
     });
   }
 
+  private createTable(): void {
+    const element = this.tableContainer.nativeElement;
+
+    // Remove previous table if exists
+    d3.select(element).selectAll("*").remove();
+
+    // Create table
+    const table = d3.select(element)
+      .append('table')
+      .attr('class', 'd3-table');
+
+    // Append table header
+    const thead = table.append('thead').append('tr');
+    thead.selectAll('th')
+      .data(this.columns)
+      .enter()
+      .append('th')
+      .text(d => d);
+
+    // Append table body
+    const tbody = table.append('tbody');
+
+    // Append table rows
+    const rows = tbody.selectAll('tr')
+      .data(this.deviceDetails)
+      .enter()
+      .append('tr');
+
+    // Append table cells
+    rows.selectAll('td')
+      .data(d => [...this.columns.slice(0, -1).map(col => d[col]), d.order])
+      .enter()
+      .append('td')
+      .each((d, i, nodes) => {
+        const cell = d3.select(nodes[i]);
+
+        if (i === 4) { // Last column - Order Details
+          cell.append('button')
+            .text(d)
+            .attr('class', 'order-button')
+            .on('click', () => {
+              this.router.navigate(['/order', d]); // Navigate programmatically
+            });
+        } else {
+          cell.text(d);
+        }
+      });
+  }
 }
 
 
