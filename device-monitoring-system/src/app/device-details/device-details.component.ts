@@ -115,7 +115,7 @@ export class DeviceDetailsComponent implements OnInit {
         if (i === 4) { // Last column - Order Details
           cell.append('button')
             .text(d)
-            .attr('class', 'order-button')
+            .attr('class', 'button-order')
             .on('click', () => {
               this.router.navigate(['/order', d]); // Navigate programmatically
             });

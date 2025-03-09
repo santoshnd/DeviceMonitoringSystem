@@ -1,42 +1,42 @@
-::ng-deep {
-    .d3-table {
-        width: 100%;
-        border-spacing: 15px;
-        margin-top: 20px;
-    }
-}
+// ::ng-deep {
+//     .d3-table {
+//         width: 50%;
+//         // border-spacing: 15px;
+//         // margin-top: 20px;
+//     }
+// }
 
-::ng-deep {
+// ::ng-deep {
 
-    .d3-table th,
-    .d3-table td {
-        border: 1px solid #ddd;
-        padding: 15px;
-        text-align: left;
-    }
-}
+//     .d3-table th,
+//     .d3-table td {
+//         border: 1px solid #ddd;
+//         padding: 15px;
+//         text-align: left;
+//     }
+// }
 
-::ng-deep {
-    .d3-table th {
-        background-color: #007bff;
-        color: white;
-    }
-}
+// ::ng-deep {
+//     .d3-table th {
+//         background-color: #007bff;
+//         color: white;
+//     }
+// }
 
-::ng-deep {
-    .d3-table tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-}
+// ::ng-deep {
+//     .d3-table tr:nth-child(even) {
+//         background-color: #f2f2f2;
+//     }
+// }
 
-.header {
-    display: flex;
-    justify-content:left;
-    align-items: center;
+// .header {
+//     display: flex;
+//     justify-content:left;
+//     align-items: center;
 
-    margin-left: 15px;
-}
+//     margin-left: 15px;
+// }
 
-.btn-home {
-    margin-right: 10px;
-}
+// .btn-home {
+//     margin-right: 10px;
+// }
