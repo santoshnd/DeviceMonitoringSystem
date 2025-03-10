@@ -4,5 +4,7 @@
     static BASE_API_DEVICE_DETAILS = 'https://mock-api.assessment.sfsdm.org/events';
     
     static BASE_API_ORDER_DETAILS = 'https://mock-api.assessment.sfsdm.org/order';
+
+    static BASE_CONFIG =   "https://mock-api.assessment.sfsdm.org/config";
 }
 

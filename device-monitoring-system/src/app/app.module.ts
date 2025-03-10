@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { DeviceDetailsComponent } from './device-details/device-details.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
+import { EnvComponent } from './env/env.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { OrderDetailsComponent } from './order-details/order-details.component';
     AppComponent,
     DeviceDetailsComponent,
     DeviceListComponent,
-    OrderDetailsComponent
+    OrderDetailsComponent,
+    EnvComponent
   ],
   imports: [
     BrowserModule,
