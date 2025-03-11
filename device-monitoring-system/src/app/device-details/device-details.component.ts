@@ -129,6 +129,9 @@ export class DeviceDetailsComponent implements OnInit {
             });
         } else {
           cell.text(d);
+          if (i === 2) { //Status column 
+            cell.style('background-color', d === 'running' ? 'green' : (d === 'stopped') ? 'red' : ''); // Color status
+          }
         }
       });
   }
