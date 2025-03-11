@@ -22,16 +22,21 @@ class DeviceDetail {
 })
 export class DeviceDetailsComponent implements OnInit {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef;
-  columns = ['timestamp', 'partsPerMinute', 'status', 'deviceId', 'order'];
+  @ViewChild('chartContainerPpm', { static: true }) chartContainerPpm!: ElementRef;
 
+  columns = ['timestamp', 'partsPerMinute', 'status', 'deviceId', 'order'];
   deviceId: any;
 
   // prepare api url to get device list
   deviceDetailstUrl = ApiCOnfig.BASE_API_DEVICE_DETAILS;
   deviceDetails: DeviceDetail[] = [];
 
+  // chart properties
+  private margin = { top: 20, right: 30, bottom: 30, left: 60 };
+  private width = (window.innerWidth * 0.8) - this.margin.left - this.margin.right;
+  private height = (window.innerHeight * 0.50) - this.margin.top - this.margin.bottom;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private ngZone: NgZone) { }
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private el: ElementRef, private ngZone: NgZone) { }
 
   ngOnInit(): void {
     // get route param
@@ -41,7 +46,10 @@ export class DeviceDetailsComponent implements OnInit {
       next: (data) => {
         this.deviceDetails.push(data);
 
-        // populate d3-table 
+        // create d3-chart
+        this.createChart();
+
+        // create d3-table 
         this.createTable();
 
       },
@@ -127,8 +135,76 @@ export class DeviceDetailsComponent implements OnInit {
 
   onHomeClick() {
     // default Home route
-    this.router.navigate(['']); 
+    this.router.navigate(['']);
+  }
+
+
+  private createChart() {
+    const element = this.chartContainerPpm.nativeElement;
+
+    // Remove previous chart if exists
+    d3.select(element).selectAll("*").remove();
+
+    const svg = d3.select(element)
+      .append("svg")
+      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${this.margin.left},${this.margin.top})`);
+
+    // Define scales
+    const x = d3.scaleTime()
+      // .domain(d3.extent(this.data, d => d.timestamp) as [Date, Date]) // Ensure proper type
+      .domain(d3.extent(this.deviceDetails, d => d.timestamp) as unknown as [Date, Date]) // Ensure proper type
+
+      .range([0, this.width]);
+
+    const y = d3.scaleLinear()
+      .domain(d3.extent(this.deviceDetails, d => d.partsPerMinute) as [number, number]) // Ensure proper type
+      .range([this.height, 0]);
+
+    // Define line generator
+    const line = d3.line<any>()
+      .x(d => x(d.timestamp))
+      .y(d => y(d.partsPerMinute));
+
+    // Add X axis
+    svg.append("g")
+      .attr("transform", `translate(0,${this.height})`)
+      .call(d3.axisBottom(x).ticks(5));
+
+    // Add X-axis label
+    svg.append("text")
+      .attr("x", this.width / 2)
+      .attr("y", this.height + this.margin.bottom - 5) // Position below x-axis
+      .style("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("fill", "brown")
+      .style("font-weight", "bold")
+      .text("Timestamp");
+
+    // Add Y axis
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Add Y-axis label
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -this.height / 2)
+      .attr("y", -this.margin.left + 15) // Position left of y-axis
+      .style("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("fill", "brown")
+      .style("font-weight", "bold")
+      .text("Parts Per Minute");
+
+    // Add the line
+    svg.append("path")
+      .datum(this.deviceDetails)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 2)
+      .attr("d", line);
   }
 }
-
 
